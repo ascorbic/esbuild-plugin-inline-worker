@@ -29,14 +29,17 @@ export default function Worker() {
           };
         }
       );
-      
-      const name = extraConfig.workerName ? { name: extraConfig.workerName } : {}
+
+      const options = extraConfig.workerOptions || {};
+      if (extraConfig.workerName) {
+        options.name = extraConfig.workerName;
+      }
 
       const inlineWorkerFunctionCode = `
 export default function inlineWorker(scriptText) {
   let blob = new Blob([scriptText], {type: 'text/javascript'});
   let url = URL.createObjectURL(blob);
-  let worker = new Worker(url, ${JSON.stringify(name)});
+  let worker = new Worker(url, ${JSON.stringify(options)});
   URL.revokeObjectURL(url);
   return worker;
 }
@@ -71,6 +74,7 @@ async function buildWorker(workerPath, extraConfig) {
     delete extraConfig.outfile;
     delete extraConfig.outdir;
     delete extraConfig.workerName;
+    delete extraConfig.workerOptions;
   }
 
   await esbuild.build({

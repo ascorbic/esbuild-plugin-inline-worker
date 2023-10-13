@@ -66,3 +66,14 @@ await esbuild.build({
   ...extraConfig, // <-- your config can override almost everything
 });
 ```
+
+The config object can also have a `workerOptions` property, which is passed to the [Worker constructor](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker) as the second argument. This is useful if you want to specify a name for the worker, or to chnage the type to `"module"`.
+
+```js
+inlineWorkerPlugin({
+  workerOptions: {
+    name: 'my-worker',
+    type: 'module',
+  },
+});
+```
